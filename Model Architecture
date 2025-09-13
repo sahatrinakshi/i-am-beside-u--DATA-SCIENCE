@@ -1,0 +1,77 @@
+Overview
+
+Paper-Sleuth is a multi-agent AI system that automatically generates multiple-choice questions (MCQs) from academic material and delivers them through an interactive quiz interface.
+The design focuses on reasoning, planning, and executing steps similar to a human instructor preparing exam questions.
+
+2. Components
+Component	Purpose	Key Technology
+User Interface (UI)	Streamlit web app where a user enters a topic and attempts the generated quiz.	Streamlit
+Retrieval-Augmented Generation (RAG) Layer	Retrieves relevant content from lecture notes / PDFs for grounding question generation.	FAISS vector store + HuggingFace sentence embeddings
+Planner Agent	Analyzes the topic and retrieved passages; extracts key concepts and decides target difficulty mix (e.g., 40% easy, 40% medium, 20% hard).	Prompt-driven LLM (Falcon-7B / GPT-J)
+Generator Agent	Generates MCQs with options, answer keys and explanations using fine-tuned language model.	LoRA-tuned Falcon-7B (or GPT-J)
+Evaluator Agent	Classifies each question’s difficulty and checks style/quality; filters or requests revisions if needed.	Fine-tuned DistilBERT classifier
+Custom Tools (MCP-style)	Optional on-demand utilities invoked by the Generator: e.g. Wikipedia search, calculator.	Python tool registry + simple API calls
+Pipeline Orchestrator	Coordinates communication among agents and ensures the outputs flow from planning → generation → evaluation → UI.	main_pipeline.py
+3. Interaction Flow
+
+User Input:
+The user specifies a topic or uploads lecture notes in the Streamlit UI.
+
+Context Retrieval (RAG):
+FAISS retrieves the most relevant passages from the indexed lecture material.
+
+Planning:
+Planner Agent reads the retrieved context and produces:
+
+A list of key concepts,
+
+A difficulty distribution plan (e.g., easy/medium/hard percentages).
+
+Question Generation:
+Generator Agent uses the LoRA-tuned Falcon-7B model to create MCQs for each concept,
+including answer keys and explanations.
+If needed, it calls external tools (Wikipedia, calculator) via an MCP-style interface.
+
+Evaluation & Filtering:
+Evaluator Agent:
+
+Classifies each MCQ’s difficulty with the DistilBERT model,
+
+Compares the output against the Planner’s difficulty targets,
+
+Filters or requests regeneration of questions that don’t match criteria.
+
+Delivery to UI:
+The validated MCQs are sent to the Streamlit interface where the user can take the quiz,
+select answers, and see an automatically computed score.
+
+4. Models Used and Rationale
+Model	Role	Reason for Choice
+LoRA-tuned Falcon-7B (or GPT-J)	Generates exam-style MCQs.	Open-weights LLM with strong text generation ability; LoRA gives parameter-efficient fine-tuning to mimic past exam style without needing full retraining.
+DistilBERT (fine-tuned)	Difficulty classification of MCQs.	Lightweight and fast; can be fine-tuned on a small labeled dataset of easy/medium/hard questions.
+HuggingFace Sentence Embeddings + FAISS	Document retrieval for RAG.	Efficient vector search enabling accurate context retrieval even for large collections of notes.
+5. Design Considerations
+
+Transparency & Maintainability:
+Each agent is a small, composable Python module; easier to debug than a monolithic LLM pipeline.
+
+Cost & Latency:
+LoRA reduces training compute; DistilBERT is efficient for real-time difficulty scoring.
+
+Extensibility:
+The MCP-style tool registry allows adding new external tools (e.g., equation renderer, dataset lookup) without modifying core logic.
+
+User Experience:
+A lightweight Streamlit app provides an immediate, familiar web interface requiring no installation beyond Python.
+
+6. Summary
+
+The architecture follows best practices for building effective LLM agents:
+
+Simple, composable patterns (Planner–Generator–Evaluator) instead of an overly complex framework,
+
+RAG for grounding,
+
+Fine-tuned models to capture exam-style question phrasing and to ensure reliable difficulty tagging.
+
+This design produces an AI agent that can reason, plan, and execute the full workflow of creating and delivering high-quality exam preparation quizzes.
