@@ -1,10 +1,10 @@
 # i-am-beside-u--DATA-SCIENCE
 AI-powered Exam-Prep Agent that automatically generates MCQs from study material, classifies difficulty with a fine-tuned DistilBERT model, and offers an interactive quiz interface using a multi-agent, RAG-enhanced architecture
-# Paper-Sleuth: Exam-Prep Question Generator + Quiz Master
+# : Exam-Prep Question Generator + Quiz Master
 
-**Author:** Saugata Malakar  
+**Author:** Trinakshi Saha 
 **University:** IIT Kharagpur  
-**Department:** Civil Engineering
+**Department:** Electrical engineering Engineering
 
 ---
 
