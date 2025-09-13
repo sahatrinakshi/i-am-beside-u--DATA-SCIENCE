@@ -1,0 +1,21 @@
+paper_sleuth_full_repo/
+├─ README.md                  # Project overview and usage instructions
+├─ requirements.txt           # Python dependencies
+├─ data/
+│   ├─ sample_mcq_dataset.jsonl        # Example MCQ dataset
+│   └─ difficulty_dataset.jsonl        # Sample difficulty labels for DistilBERT
+├─ agents/
+│   ├─ planner.py             # Planner Agent – extracts key concepts
+│   ├─ generator.py           # Generator Agent – LoRA-tuned MCQ generator
+│   └─ evaluator.py           # Evaluator Agent – DistilBERT difficulty classifier
+├─ rag/
+│   └─ build_index.py         # Build & query FAISS vector index for RAG
+├─ tools/
+│   ├─ wiki_search.py         # Wikipedia search utility (MCP-style)
+│   └─ calculator.py          # Simple calculator tool
+├─ ui/
+│   └─ streamlit_app.py       # Interactive quiz web app
+├─ main_pipeline.py           # Orchestrates multi-agent workflow
+├─ train_distilbert.py        # Fine-tune DistilBERT for difficulty classification
+└─ notebooks/
+    └─ exam_prep_agent.ipynb  # Colab-ready notebook demo
